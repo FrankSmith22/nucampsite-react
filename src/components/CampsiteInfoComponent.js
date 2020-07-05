@@ -16,7 +16,7 @@ function RenderCampsite({ campsite }) {
     );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, campsiteId }) {
     if (comments) {
         return (
             <div className="col-md-5 m-1">
@@ -28,6 +28,7 @@ function RenderComments({ comments }) {
                             {comment.author} -- {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</p>
                     );
                 })}
+                <CommentForm campsiteId={campsiteId} addComment={addComment}/>
             </div>
         );
     }
@@ -50,10 +51,11 @@ function CampsiteInfo(props) {
                 </div>
                 <div className="row">
                     <RenderCampsite campsite={props.campsite} />
-                    <Col>
-                        <RenderComments comments={props.comments} />
-                        <CommentForm />
-                    </Col>
+                    <RenderComments
+                        comments={props.comments}
+                        addComment={props.addComment}
+                        campsiteId={props.campsite.id}
+                    />
                 </div>
             </div>
         );
@@ -66,7 +68,7 @@ const maxLength = len => val => !val || (val.length <= len);
 const minLength = len => val => val && (val.length >= len);
 
 class CommentForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
 
         this.state = {
@@ -81,12 +83,13 @@ class CommentForm extends Component {
         this.toggleModal = this.toggleModal.bind(this);
     }
 
-    toggleModal(){
-        this.setState({isModalOpen: !this.state.isModalOpen});
+    toggleModal() {
+        this.setState({ isModalOpen: !this.state.isModalOpen });
     }
 
-    handleSubmit(data){
-        alert(`Submitted data: ${JSON.stringify(data)}`);
+    handleSubmit(values) {
+        this.toggleModal();
+        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
     }
 
     render() {
@@ -100,7 +103,7 @@ class CommentForm extends Component {
                             <Row className="form-group">
                                 <Label htmlFor="rating" md={6}>Rating</Label>
                                 <Col md={6}>
-                                    <Control.select 
+                                    <Control.select
                                         model=".rating"
                                         id="rating"
                                         name="rating"
@@ -116,7 +119,7 @@ class CommentForm extends Component {
                                         <option>4</option>
                                         <option>5</option>
                                     </Control.select>
-                                    <Errors 
+                                    <Errors
                                         className="text-danger"
                                         model=".rating"
                                         show="touched"
@@ -130,7 +133,7 @@ class CommentForm extends Component {
                             <Row className="form-group">
                                 <Label htmlFor="author" md={6}>Author</Label>
                                 <Col md={6}>
-                                    <Control.text 
+                                    <Control.text
                                         model=".author"
                                         id="author"
                                         name="author"
@@ -141,7 +144,7 @@ class CommentForm extends Component {
                                             maxLength: maxLength(15)
                                         }}
                                     />
-                                    <Errors 
+                                    <Errors
                                         className="text-danger"
                                         model=".author"
                                         show="touched"
@@ -157,7 +160,7 @@ class CommentForm extends Component {
                             <Row className="form-group">
                                 <Label htmlFor="text" md={6}>Comment</Label>
                                 <Col md={6}>
-                                    <Control.textarea 
+                                    <Control.textarea
                                         model=".text"
                                         id="text"
                                         name="text"
