@@ -46,7 +46,7 @@ class Main extends Component {
                 campsitesErrMess={this.props.campsites.errMess}
                 promotion={this.props.promotions.promotions.filter(promotion => promotion.featured)[0]}
                 promotionLoading={this.props.promotions.isLoading}
-                promotionsErrMess={this.props.promotions.errMess}
+                promotionErrMess={this.props.promotions.errMess}
                 partner={this.props.partners.filter(partner => partner.featured)[0]}
                 />
             );
@@ -57,7 +57,7 @@ class Main extends Component {
                 <CampsiteInfo 
                 campsite={this.props.campsites.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}
                 isLoading={this.props.campsites.isLoading}
-                ErrMess={this.props.campsites.errMess}
+                errMess={this.props.campsites.errMess}
                 comments={this.props.comments.comments.filter(comment => comment.campsiteId === +match.params.campsiteId)}
                 commentsErrMess={this.props.comments.errMess}
                 addComment={this.props.addComment}
